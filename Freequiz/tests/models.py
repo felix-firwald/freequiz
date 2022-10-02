@@ -86,4 +86,3 @@ class Result(models.Model):
     )
     slug = models.SlugField(unique=True)
     score = models.IntegerField()
-
