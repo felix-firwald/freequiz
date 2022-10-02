@@ -36,7 +36,10 @@ class Question(models.Model):
         related_name='questions'
     )
     additional = models.TextField(null=True)
-    type = models.CharField(choice=TYPES_OF_QUESTION)
+    type = models.CharField(
+        max_length=50,
+        choices=TYPES_OF_QUESTION
+    )
 
     def __str__(self):
         return f'Question {self.text[:15]}'
@@ -50,7 +53,10 @@ class Test(models.Model):
     name = models.CharField(max_length=60)
     description = models.TextField(null=True)
     slug = models.SlugField(unique=True)
-    access = models.CharField(choice=TYPES_OF_ACCESS)
+    access = models.CharField(
+        max_length=50,
+        choices=TYPES_OF_ACCESS
+    )
     is_closed = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
 
@@ -58,7 +64,8 @@ class Test(models.Model):
         ordering = ['created']
         constraints = [
             models.UniqueConstraint(
-                fields=['author', 'name']
+                fields=['author', 'name'],
+                name='unique name of test by one author'
             )
         ]
 
