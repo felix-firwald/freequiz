@@ -1,11 +1,25 @@
+from os import access
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
+from models import (
+    User,
+    Variant,
+    Question,
+    Test,
+    Result
+)
+
 
 def main_page(request):
+    tests = Test.objects.filter(
+        is_closed=False,
+        access='all'
+    )
     return render(
         request,
-        'index.html'
+        'index.html',
+        {'tests': tests}
     )
 
 

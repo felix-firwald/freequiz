@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Главная
+{% endblock %}
+
+{% block content %}
+    <a href="{% url 'tests:create_quiz' %}">Создать тест</a>
+    {% for test in tests %}
+        <h3>{{ test.name }}</h3>
+        <p>{{ test.description }}</p>
+        <a href="{% url 'tests:quiz' test.slug %}">Пройти</a>
+        {% if not forloop.last %}<hr>{% endif %}
+    {% endfor %}
+{% endblock %}
