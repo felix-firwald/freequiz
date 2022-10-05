@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Главная
+{% endblock %}
+
+{% block content %}
+    <h2 id="timerDown"></h2>
+    {% if result %}
+        <script>
+            const targettt = document.getElementById("timerDown");
+            let timer = {{ content.question.time_limit }};
+            setInterval(updateCount, 1000);
+
+            function updateCount() {
+                const minutes = Math.floor(timer / 60);
+                let seconds = timer % 60;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+                text = `${minutes}:${seconds}`;
+                if (seconds > 0) {
+                    targettt.innerHTML = `${minutes}:${seconds}`;
+                    timer--;
+                } else {
+                    targettt.innerHTML = `Время вышло!`;
+                }
+            }
+        </script>
+    {% else %}
+        <h1>Доступ к этому тесту закрыт.</h1>
+    {% endif %}
+{% endblock %}

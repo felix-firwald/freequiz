@@ -1,4 +1,8 @@
 from django.db import models
+from django.core.validators import (
+    MaxValueValidator,
+    MinValueValidator
+)
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -18,7 +22,7 @@ TYPES_OF_ACCESS = [
 class Variant(models.Model):
     text = models.CharField(max_length=120)
     question = models.ForeignKey(
-        'Question',
+        'BlueprintQuestion',
         on_delete=models.CASCADE,
         related_name='variants'
     )
@@ -28,10 +32,10 @@ class Variant(models.Model):
         return f'Variant {self.text[:15]}'
 
 
-class Question(models.Model):
+class BlueprintQuestion(models.Model):
     text = models.CharField(max_length=160)
     test = models.ForeignKey(
-        'Test',
+        'BlueprintTest',
         on_delete=models.CASCADE,
         related_name='questions'
     )
@@ -40,12 +44,64 @@ class Question(models.Model):
         max_length=50,
         choices=TYPES_OF_QUESTION
     )
+    time_limit = models.IntegerField(
+        default=120,
+        validators=[
+            MinValueValidator(10),
+            MaxValueValidator(3599)
+        ]
+    )
+    max_score = models.IntegerField(
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(10)
+        ]
+    )
 
     def __str__(self):
         return f'Question {self.text[:15]}'
 
 
-class Test(models.Model):
+class Question(models.Model):
+    blueprint = models.ForeignKey(
+        'BlueprintQuestion',
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='answers'
+    )
+    test = models.ForeignKey(
+        'Test',
+        on_delete=models.CASCADE,
+        related_name='questions'
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='questions'
+    )
+    score = models.IntegerField(
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(10)
+        ]
+    )
+    max_score = models.IntegerField(
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(10)
+        ]
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'blueprint', 'test'],
+                name='user can answer only once at one test'
+            )
+        ]
+
+
+class BlueprintTest(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE
@@ -73,16 +129,21 @@ class Test(models.Model):
         return f'Test {self.slug[:15]}'
 
 
-class Result(models.Model):
+class Test(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='results'
+        related_name='tests'
     )
     test = models.ForeignKey(
-        Test,
+        BlueprintTest,
         on_delete=models.DO_NOTHING,
         related_name='results'
     )
+    passed = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(unique=True)
-    score = models.IntegerField()
+    result = models.IntegerField()
+    max_result = models.IntegerField()
+
+    class Meta:
+        ordering = ['passed']
