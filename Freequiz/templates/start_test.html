@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Тест
+{% endblock %}
+
+{% block content %}
+    {% if result %}
+        <form action="{% url 'tests:question' slug id %}">
+            <input type="submit" value="Начать" />
+        </form>
+    {% else %}
+        <h1>Доступ к этому тесту закрыт.</h1>
+    {% endif %}
+{% endblock %}

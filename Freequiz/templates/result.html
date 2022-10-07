@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Результат
+{% endblock %}
+
+{% block content %}
+    <h1>Тест окончен.</h1>
+    <h2>Вы получили {{ data.result }}/{{ data.max_result }}</h2>
+{% endblock %}

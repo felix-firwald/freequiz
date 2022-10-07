@@ -12,7 +12,7 @@ from .models import (
 
 
 def main_page(request):
-    tests = Test.objects.filter(
+    tests = BlueprintTest.objects.filter(
         is_closed=False,
         access='all'
     )
@@ -49,6 +49,7 @@ def quiz(request, slug):
         BlueprintTest,
         slug=slug
     )
+    # BlueprintTest.objects.filter().get()
     if test.is_closed is True:
         context = {
             'result': False
@@ -56,12 +57,31 @@ def quiz(request, slug):
     else:
         context = {
             'result': True,
-            'content': test.questions.all(),
+            'slug': slug,
+            'id': test.questions.all()[0]
         }
     return render(
         request,
-        'question.html',
+        'start_test.html',
         context
+    )
+
+
+@login_required
+def question(request, slug, question_id):
+    question = BlueprintQuestion.objects.filter(
+        pk=question_id,
+        test__slug=slug,
+        test__is_closed=False
+    )
+    if not question:
+        return redirect(
+            'tests:main'
+        )
+    return render(
+        request,
+        'question.html',
+        {'question': question[0]}
     )
 
 
@@ -95,5 +115,5 @@ def quiz_result(request, slug):
     return render(
         request,
         'result.html',
-        result
+        {'data': result}
     )

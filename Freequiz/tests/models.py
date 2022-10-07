@@ -28,6 +28,10 @@ class Variant(models.Model):
     )
     is_correct = models.BooleanField(default=False)
 
+    class Meta:
+        verbose_name = 'вариант'
+        verbose_name_plural = 'варианты'
+
     def __str__(self):
         return f'Variant {self.text[:15]}'
 
@@ -57,6 +61,10 @@ class BlueprintQuestion(models.Model):
             MaxValueValidator(10)
         ]
     )
+
+    class Meta:
+        verbose_name = 'вопрос'
+        verbose_name_plural = 'вопросы'
 
     def __str__(self):
         return f'Question {self.text[:15]}'
@@ -93,6 +101,8 @@ class Question(models.Model):
     )
 
     class Meta:
+        verbose_name = 'ответ на вопрос'
+        verbose_name_plural = 'ответы на вопросы'
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'blueprint', 'test'],
@@ -117,6 +127,8 @@ class BlueprintTest(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        verbose_name = 'тест'
+        verbose_name_plural = 'тесты'
         ordering = ['created']
         constraints = [
             models.UniqueConstraint(
@@ -146,4 +158,6 @@ class Test(models.Model):
     max_result = models.IntegerField()
 
     class Meta:
+        verbose_name = 'результат'
+        verbose_name_plural = 'результаты'
         ordering = ['passed']
