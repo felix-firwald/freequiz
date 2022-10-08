@@ -5,11 +5,29 @@
 {% endblock %}
 
 {% block content %}
-    <a href="{% url 'tests:create_quiz' %}">Создать тест</a>
     {% for test in tests %}
-        <h3>{{ test.name }}</h3>
-        <p>{{ test.description }}</p>
-        <a href="{% url 'tests:quiz' test.slug %}">Пройти</a>
-        {% if not forloop.last %}<hr>{% endif %}
+        <div class="card col-4 top-50 start-50 translate-middle-x">
+            <div class="card-body">
+                <h4 class="card-title">{{ test.name }}</h4>
+                <hr>
+                <p class="card-text">{{ test.description }}</p>
+                <a class="btn btn-primary" href="{% url 'tests:quiz' test.slug %}">Пройти</a>
+            </div>
+        </div>
+        <br>
     {% endfor %}
+    <br>
+    <div class="card col-2 top-50 start-50 translate-middle-x">
+        <div class="card-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col text-center">
+                        <p class="card-text">Вы можете создать свой тест</p>
+                        <a class="btn btn-outline-primary" href="{% url 'tests:create_quiz' %}">Создать тест</a> 
+                    </div>
+                </div>
+            </div>   
+        </div>
+    </div>
+    <br>
 {% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}500{% endblock %}
+{% block content %}
+    <h1>Черт!!!</h1>
+    <p>Прости, но со мной случилось нечто ужасное.</p>
+    <img 
+        src="{{ STATIC_URL }}/static/500.svg"
+        width="255"
+        height="255"
+    >
+{% endblock %}

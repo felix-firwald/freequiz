@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}404{% endblock %}
+{% block content %}
+    <h1>Упс!</h1>
+    <p>Страницы с адресом {{ path }} не существует</p>
+    <img 
+        src="{{ STATIC_URL }}/static/404.svg"
+        width="255"
+        height="255"
+    >
+{% endblock %}

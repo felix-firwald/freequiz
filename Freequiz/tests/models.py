@@ -3,14 +3,15 @@ from django.core.validators import (
     MaxValueValidator,
     MinValueValidator
 )
+from django.template.defaultfilters import slugify
 from django.contrib.auth import get_user_model
+import uuid
 
 User = get_user_model()
 
 TYPES_OF_QUESTION = [
     ('radio', 'Один правильный ответ'),
     ('checkbox', 'Несколько правильных ответов'),
-    ('textfield', 'Текстовое поле')
 ]
 
 TYPES_OF_ACCESS = [
@@ -43,7 +44,7 @@ class BlueprintQuestion(models.Model):
         on_delete=models.CASCADE,
         related_name='questions'
     )
-    additional = models.TextField(null=True)
+    additional = models.TextField(null=True, blank=True)
     type = models.CharField(
         max_length=50,
         choices=TYPES_OF_QUESTION
@@ -117,8 +118,8 @@ class BlueprintTest(models.Model):
         on_delete=models.CASCADE
     )
     name = models.CharField(max_length=60)
-    description = models.TextField(null=True)
-    slug = models.SlugField(unique=True)
+    description = models.TextField(null=True, blank=True)
+    slug = models.SlugField(unique=True, blank=True, default=uuid.uuid4)
     access = models.CharField(
         max_length=50,
         choices=TYPES_OF_ACCESS
@@ -138,7 +139,7 @@ class BlueprintTest(models.Model):
         ]
 
     def __str__(self):
-        return f'Test {self.slug[:15]}'
+        return f'Test {self.name[:20]}'
 
 
 class Test(models.Model):
