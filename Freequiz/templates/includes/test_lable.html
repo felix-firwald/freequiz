@@ -1,0 +1,48 @@
+{% load static %}
+<div class="card shadow-sm col-4 top-50 start-50 translate-middle-x">
+    <div class="blocks">
+        <br>
+        {% if is_closed %}
+            <div class="container">
+                <div class="row">
+                    <svg 
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="100"
+                        height="100"
+                        fill="#6c757d"
+                        class="bi bi-lock-fill"
+                        viewBox="0 0 16 16">
+                        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="card-body">
+                <h4 class="text-center text-secondary">Доступ к этому тесту закрыт.</h4>
+                <p class="text-center font-weight-light text-secondary">Возможно, автор вновь откроет к нему доступ спустя некоторое время.</p>
+            </div>
+        {% else %}
+            <div class="container">
+                <div class="row">
+                    <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        width="100" 
+                        height="100" 
+                        fill="#6c757d" 
+                        class="bi bi-card-checklist" 
+                        viewBox="0 0 16 16">
+                        <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
+                        <path d="M7 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0zM7 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="card-body">
+                <h4 class="text-center text-secondary">{{ name }}</h4>
+                <p class="text-center font-weight-light text-secondary">{{ description }}</p><br>
+                <p class="text-center text-secondary"><i>Предельное время для прохождения: {{ timelimit }}</i></p><br id="tabulation">
+                <div class="d-grid gap-2">
+                    <a id="startTest" class="btn btn-outline-success">Начать</a> 
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>

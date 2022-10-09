@@ -1,0 +1,49 @@
+{% load static %}
+
+<div class="navbar navbar-dark" style="background-color: dark">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'tests:main' %}">
+            <img src="{% static 'favicon.svg' %}" width="80" height="80" class="d-inline-block align-top" alt="">
+        </a>
+        <ul class="nav justify-content-center">
+            {% if user.is_authenticated %}
+                <li class="nav-item"> 
+                    <a 
+                    class="nav-link {% if view_name  == 'my_results' %}active{% endif %}" 
+                    href="{% url 'tests:my_results' %}">Пройденные тесты</a>
+                </li>
+                <li class="nav-item"> 
+                    <a 
+                    class="nav-link" 
+                    href="{% url 'users:logout' %}">Выйти</a>
+                <li class="nav-item">
+                    <a 
+                    class="nav-link disabled"></a>
+                </li>
+                <li class="nav-item">
+                    <a 
+                    class="nav-link disabled"></a>
+                </li>
+                <li class="nav-item">
+                    <a 
+                    class="nav-link disabled">
+                    {{ user.username }}</a>
+                </li>
+            {% endif %}
+            {% if user.is_authenticated == False %}
+                <li class="nav-item"> 
+                    <a 
+                    class="nav-link link-light" 
+                    href="{% url 'users:login' %}">Войти
+                    </a>
+                </li>
+                <li class="nav-item"> 
+                    <a 
+                    class="nav-link link-light" 
+                    href="{% url 'users:signup' %}">Регистрация
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>

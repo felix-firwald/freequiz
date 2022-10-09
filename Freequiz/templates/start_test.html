@@ -1,15 +1,26 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block title %}
     Тест
 {% endblock %}
 
+{% block scripts %}
+    <script src="{% static 'scripts/quiz.js' %}" defer></script>
+{% endblock %}
+
 {% block content %}
-    {% if result %}
-        <form action="{% url 'tests:question' slug id %}">
-            <input type="submit" value="Начать" />
-        </form>
-    {% else %}
-        <h1>Доступ к этому тесту закрыт.</h1>
-    {% endif %}
+    <div id="lable-of-test" class="position-relative top-50 col-12 bg-light start-0">
+        <div class="not_allocated">
+            <br>
+                {% include 'includes/test_lable.html' %}
+                <form id="quiz-from" class="mt-3 mb-3">
+                    {% csrf_token %}
+                    <div id="quiz-box"></div>
+                    </div>
+                </form>
+                <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        </div>
+    </div>
 {% endblock %}

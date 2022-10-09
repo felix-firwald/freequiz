@@ -20,9 +20,9 @@ urlpatterns = [
         name='quiz'
     ),
     path(
-        'quiz/<slug:slug>/question/<int:pk>',
-        views.question,
-        name='question'
+        'quiz/<slug:slug>/data',
+        views.get_data_for_quiz,
+        name='get_data_for_quiz'
     ),
     path(
         'quiz/<slug:slug>/delete/',
@@ -38,5 +38,10 @@ urlpatterns = [
         'result/<slug:slug>/',
         views.quiz_result,
         name='result'
+    ),
+    path(
+        'my_results',
+        views.my_results,
+        name='my_results'
     )
 ]

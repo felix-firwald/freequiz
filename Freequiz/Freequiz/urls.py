@@ -23,7 +23,17 @@ handler500 = 'core.views.internal_server_error'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('tests.urls'))
+    path('user/', include('users.urls')),
+    path('', include('tests.urls')),
+    path('__debug__/', include('debug_toolbar.urls'))
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    import mimetypes
+    mimetypes.add_type("application/javascript", ".js", True)
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

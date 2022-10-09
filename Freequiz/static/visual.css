@@ -1,8 +1,0 @@
-.blocks {
-    transition: all .4s;
-}
-
-.blocks:hover {
-    background-color: rgb(244, 246, 255);
-    transition: all .4s;
-}

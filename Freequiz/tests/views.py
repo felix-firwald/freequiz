@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 from .models import (
     User,
@@ -25,63 +26,49 @@ def main_page(request):
 
 @login_required
 def create_quiz(request):
-    pass
+    return redirect(
+        'tests:main'
+    )
 
 
 @login_required
-def question(request, slug, pk):
-    question = Question.objects.get(pk=pk)
-    context = {
-        'question': question,
-        'slug': slug
-    }
+def get_data_for_quiz(request, slug):
+    quiz = get_object_or_404(
+        BlueprintTest,
+        slug=slug
+    )
+    questions_list = list()
+    for question in quiz.get_guestions():
+        variants = []
+        for variant in question.get_variants(text_only=True):
+            variants.append(variant)
+        questions_list.append({question.text: variants})
 
-    return render(
-        request,
-        'question.html',
-        context
+    return JsonResponse(
+        {
+            'questions': questions_list,
+            'timelimit': quiz.timelimit
+        }
     )
 
 
 @login_required
 def quiz(request, slug):
-    test = get_object_or_404(
+    quiz = get_object_or_404(
         BlueprintTest,
         slug=slug
     )
-    # BlueprintTest.objects.filter().get()
-    if test.is_closed is True:
-        context = {
-            'result': False
-        }
-    else:
-        context = {
-            'result': True,
-            'slug': slug,
-            'id': test.questions.all()[0]
-        }
+    context = {
+        'slug': quiz.slug,
+        'is_closed': quiz.is_closed,
+        'name': quiz.name,
+        'description': quiz.description,
+        'timelimit': quiz.timelimit
+    }
     return render(
         request,
         'start_test.html',
         context
-    )
-
-
-@login_required
-def question(request, slug, question_id):
-    question = BlueprintQuestion.objects.filter(
-        pk=question_id,
-        test__slug=slug,
-        test__is_closed=False
-    )
-    if not question:
-        return redirect(
-            'tests:main'
-        )
-    return render(
-        request,
-        'question.html',
-        {'question': question[0]}
     )
 
 
@@ -104,7 +91,9 @@ def delete_quiz(request, slug):
 
 @login_required
 def edit_quiz(request):
-    pass
+    return redirect(
+        'tests:main'
+    )
 
 
 def quiz_result(request, slug):
@@ -116,4 +105,14 @@ def quiz_result(request, slug):
         request,
         'result.html',
         {'data': result}
+    )
+
+
+@login_required
+def my_results(request):
+    results = request.user.tests_results.all()
+    return render(
+        request,
+        'my_results',
+        {'data': results}
     )

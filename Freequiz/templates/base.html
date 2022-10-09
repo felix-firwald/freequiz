@@ -11,31 +11,28 @@
             rel="stylesheet"
             integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" 
             crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="static/visual.css">    
+        <link rel="stylesheet" type="text/css" href="{% static 'css/visual.css' %}">    
         <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/fav/favicon-32x32.png' %}">
         <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/fav/favicon-16x16.png' %}">
         <meta name="msapplication-TileColor" content="#000">
         <meta name="theme-color" content="#ffffff">
+        <script src="https://yastatic.net/jquery/3.3.1/jquery.min.js"></script>
+        {% block scripts %}
+        {% endblock %}
         <title>
             {% block title %}
             {% endblock %}
         </title>
     </head>
-    <body class="bg-dark">
-        <div class="container top-50 start-0 bg-green">
-            <div class="row position-absolute top-0 start-50">
-                <div class="col-2 top-50 start-0">
-                    <img 
-                        src="{{ STATIC_URL }}/static/favicon.svg"
-                        width="255"
-                        height="255"
-                    >
-                </div>
-            </div>
-        </div>
-        <main class="position-absolute col-12 bg-light top-50 start-0">
+    <body>
+        <header>
+            {% include 'includes/header.html' %}
+        </header>   
+        <main>
             {% block content %}
             {% endblock %}
         </main>
+        <footer class="bg-light">
+        </footer>
     </body>
 </html>
