@@ -47,7 +47,7 @@ def get_data_for_quiz(request, slug):
     return JsonResponse(
         {
             'questions': questions_list,
-            'timelimit': quiz.timelimit
+            'timelimit': int(quiz.timelimit)
         }
     )
 
