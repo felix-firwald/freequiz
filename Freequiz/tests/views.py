@@ -10,9 +10,11 @@ from .models import (
     BlueprintTest,
     Test,
 )
+from notifications.models import Notification
 
 
 def main_page(request):
+    alert = Notification.objects.last()
     tests = BlueprintTest.objects.filter(
         is_closed=False,
         access='all'
@@ -20,7 +22,10 @@ def main_page(request):
     return render(
         request,
         'index.html',
-        {'tests': tests}
+        {
+            'tests': tests,
+            'notification': alert
+        }
     )
 
 

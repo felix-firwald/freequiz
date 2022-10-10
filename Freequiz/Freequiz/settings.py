@@ -45,6 +45,7 @@ DEBUG_TOOLBAR_CONFIG = {
 
 INSTALLED_APPS = [
     'users.apps.UsersConfig',
+    'notifications.apps.NotificationsConfig',
     'core.apps.CoreConfig',
     'tests.apps.TestsConfig',
     'django.contrib.admin',

@@ -24,6 +24,7 @@ handler500 = 'core.views.internal_server_error'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include('users.urls')),
+    path('watch/', include('notifications.urls')),
     path('', include('tests.urls')),
     path('__debug__/', include('debug_toolbar.urls'))
 ]

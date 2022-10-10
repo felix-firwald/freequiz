@@ -49,7 +49,7 @@ $(document).ready(function() {
                     questions.forEach(el => {
                         for (const [question, variants] of Object.entries(el)) {
                             content_for_adding += `
-                                <div class="card shadow-sm col-4 border-0 top-50 start-50 translate-middle-x">
+                                <div class="notification card shadow-sm col-4 border-0 top-50 start-50 translate-middle-x">
                                     <div class="card-body">
                                         <div class="mb-2">
                                             <h4 class="card-title">${question}</h4><hr>

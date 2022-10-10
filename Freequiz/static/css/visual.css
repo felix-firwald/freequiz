@@ -25,3 +25,29 @@
     display: block;
     visibility: visible;
 }
+
+.notification {
+    transition: all .8s;
+}
+
+.notification:hover {
+    width: 35%;
+    background-color: #e9e8f3;
+    transition: all .4s;
+}
+
+.cardss {
+    transition: all .8s;
+}
+
+.cardss:hover {
+    width: 34%;
+    background-color: #efeff7;
+    transition: all .3s;
+}
+
+.cardss:active {
+    width: 37%;
+    background-color: #fbf5fc;
+    transition: all .2rgb(255, 255, 255)
+}

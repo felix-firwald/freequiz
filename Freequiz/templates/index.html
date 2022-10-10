@@ -7,9 +7,12 @@
 {% block content %}
     <div class="position-absolute col-12 bg-light start-0">
         <br>
+        {% if notification %}
+            {% include 'includes/notification.html' %}
+        {% endif %}
         {% for test in tests %}
-            <div class="card col-4 top-50 start-50 translate-middle-x border-0 border-radius-pill">
-                <div class="blocks">
+            <div class="cardss card col-4 top-50 start-50 translate-middle-x border-0 border-radius-pill">
+                <div class="">
                     <div class="card-body border-0">
                         <h4 class="card-title">{{ test.name }}</h4>
                         <hr>
