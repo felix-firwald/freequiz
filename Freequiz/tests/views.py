@@ -1,3 +1,5 @@
+from random import shuffle
+
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -47,7 +49,9 @@ def get_data_for_quiz(request, slug):
         variants = []
         for variant in question.get_variants(text_only=True):
             variants.append(variant)
+        shuffle(variants)
         questions_list.append({question.text: variants})
+    shuffle(questions_list)
 
     return JsonResponse(
         {
