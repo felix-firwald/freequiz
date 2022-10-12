@@ -1,6 +1,6 @@
 from random import shuffle
-import json
 
+from django.contrib.sites.models import Site
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -8,9 +8,8 @@ from django.http import JsonResponse
 from .models import (
     User,
     Variant,
-    BlueprintQuestion,
     Question,
-    BlueprintTest,
+    Test,
     Result,
 )
 from notifications.models import Notification
@@ -18,7 +17,7 @@ from notifications.models import Notification
 
 def main_page(request):
     alert = Notification.objects.last()
-    tests = BlueprintTest.objects.filter(
+    tests = Test.objects.filter(
         is_closed=False,
         access='all'
     )
@@ -42,7 +41,7 @@ def create_quiz(request):
 @login_required
 def get_data_for_quiz(request, slug):
     quiz = get_object_or_404(
-        BlueprintTest,
+        Test,
         slug=slug
     )
     questions_list = list()
@@ -80,9 +79,17 @@ def send_answer(request, slug):
         data.pop('csrfmiddlewaretoken')
         max_score = test.get_max_score()
         score = 0
-        data = set(
-            map(int, list(data.values())[0])
-        )
+        try:
+            data = set(
+                map(int, list(data.values())[0])
+            )
+        except IndexError:
+            return JsonResponse(
+                {
+                    'status': False,
+                    'error': 'Не дано ответа ни на один вопрос'
+                }
+            )
         correct_variants = Variant.objects.filter(
             question__test=test,
             is_correct=True
@@ -100,8 +107,9 @@ def send_answer(request, slug):
         )
     return JsonResponse(
         {
-            'status': 'success',
-            'slug': result.slug,
+            'status': True,
+            'slug': result.get_absolute_url(),
+            'domain': Site.objects.get_current().domain
         }
     )
 
@@ -150,10 +158,10 @@ def edit_quiz(request):
     )
 
 
-def quiz_result(request, slug):
+def quiz_result(request, result):
     result = get_object_or_404(
         Result,
-        slug=slug
+        slug=result
     )
     return render(
         request,

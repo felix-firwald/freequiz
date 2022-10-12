@@ -24,7 +24,7 @@ TYPES_OF_ACCESS = [
 class Variant(models.Model):
     text = models.CharField(max_length=120, verbose_name='текст')
     question = models.ForeignKey(
-        'BlueprintQuestion',
+        'Question',
         on_delete=models.CASCADE,
         related_name='variants',
         verbose_name='вопрос'
@@ -39,11 +39,11 @@ class Variant(models.Model):
         return f'Вариант: {self.text[:50]}'
 
 
-class BlueprintQuestion(models.Model):
+class Question(models.Model):
 
     text = models.CharField(max_length=160, verbose_name='текст')
     test = models.ForeignKey(
-        'BlueprintTest',
+        'Test',
         on_delete=models.CASCADE,
         related_name='questions',
         verbose_name='тест'
@@ -74,53 +74,7 @@ class BlueprintQuestion(models.Model):
         return f'Question {self.text[:15]}'
 
 
-class Question(models.Model):
-    blueprint = models.ForeignKey(
-        'BlueprintQuestion',
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name='answers',
-        verbose_name='вопрос'
-    )
-    test = models.ForeignKey(
-        'Result',
-        on_delete=models.CASCADE,
-        related_name='questions',
-        verbose_name='тест'
-    )
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='questions',
-        verbose_name='пользователь'
-    )
-    score = models.IntegerField(
-        validators=[
-            MinValueValidator(0),
-            MaxValueValidator(10)
-        ],
-        verbose_name='набранный балл'
-    )
-    max_score = models.IntegerField(
-        validators=[
-            MinValueValidator(1),
-            MaxValueValidator(10)
-        ],
-        verbose_name='максимальный балл'
-    )
-
-    class Meta:
-        verbose_name = 'ответ на вопрос'
-        verbose_name_plural = 'ответы на вопросы'
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'blueprint', 'test'],
-                name='user can answer only once at one test'
-            )
-        ]
-
-
-class BlueprintTest(models.Model):
+class Test(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -173,9 +127,9 @@ class BlueprintTest(models.Model):
         ]
 
     def get_max_score(self):
-        score = self.questions.all()
+        questions = self.questions.all()
         return reduce(
-            lambda x, y: x + y, [q.get_max_score() for q in score]
+            lambda x, y: x + y, [q.get_max_score() for q in questions]
         )
 
     def get_guestions(self, text_only=False):
@@ -197,7 +151,7 @@ class Result(models.Model):
         verbose_name='пользователь'
     )
     test = models.ForeignKey(
-        BlueprintTest,
+        Test,
         on_delete=models.DO_NOTHING,
         related_name='results',
         verbose_name='тест'
@@ -213,6 +167,10 @@ class Result(models.Model):
     )
     result = models.IntegerField(verbose_name='набранный балл')
     max_result = models.IntegerField(verbose_name='максимальный балл')
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('tests:result', kwargs={'slug': self.slug})
 
     class Meta:
         verbose_name = 'результат'

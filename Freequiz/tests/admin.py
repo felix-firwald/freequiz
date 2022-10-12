@@ -1,9 +1,8 @@
 from django.contrib import admin
 from .models import (
     Variant,
-    BlueprintQuestion,
     Question,
-    BlueprintTest,
+    Test,
     Result,
 )
 
@@ -12,22 +11,22 @@ class VariantInline(admin.StackedInline):
     model = Variant
 
 
-class BlueprintQuestionAdmin(admin.ModelAdmin):
+class QuestionAdmin(admin.ModelAdmin):
     inlines = [VariantInline]
 
 
-class BprQuesInline(admin.StackedInline):
-    model = BlueprintQuestion
+class QuesInline(admin.StackedInline):
+    model = Question
 
 
-class BprTestAdmin(admin.ModelAdmin):
-    inlines = [BprQuesInline]
+class TestAdmin(admin.ModelAdmin):
+    inlines = [QuesInline]
 
 
-admin.site.register(BlueprintQuestion, BlueprintQuestionAdmin)
-admin.site.register(BlueprintTest, BprTestAdmin)
+admin.site.register(Question, QuestionAdmin)
+admin.site.register(Test, TestAdmin)
 
 for model in (
-    Variant, Question, Result
+    Variant, Result
 ):
     admin.site.register(model)
