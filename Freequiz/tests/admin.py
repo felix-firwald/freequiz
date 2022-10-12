@@ -4,7 +4,7 @@ from .models import (
     BlueprintQuestion,
     Question,
     BlueprintTest,
-    Test,
+    Result,
 )
 
 
@@ -28,6 +28,6 @@ admin.site.register(BlueprintQuestion, BlueprintQuestionAdmin)
 admin.site.register(BlueprintTest, BprTestAdmin)
 
 for model in (
-    Variant, Question, Test
+    Variant, Question, Result
 ):
     admin.site.register(model)

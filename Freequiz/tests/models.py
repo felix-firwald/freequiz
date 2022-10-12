@@ -1,3 +1,5 @@
+from functools import reduce
+
 from django.db import models
 from django.core.validators import (
     MaxValueValidator,
@@ -34,10 +36,11 @@ class Variant(models.Model):
         verbose_name_plural = 'варианты'
 
     def __str__(self):
-        return f'Variant {self.text[:15]}'
+        return f'Вариант: {self.text[:50]}'
 
 
 class BlueprintQuestion(models.Model):
+
     text = models.CharField(max_length=160, verbose_name='текст')
     test = models.ForeignKey(
         'BlueprintTest',
@@ -54,17 +57,13 @@ class BlueprintQuestion(models.Model):
         max_length=50,
         choices=TYPES_OF_QUESTION
     )
-    max_score = models.IntegerField(
-        validators=[
-            MinValueValidator(1),
-            MaxValueValidator(10)
-        ],
-        verbose_name='максимальный балл'
-    )
 
     class Meta:
         verbose_name = 'вопрос'
         verbose_name_plural = 'вопросы'
+
+    def get_max_score(self):
+        return self.variants.filter(is_correct=True).count()
 
     def get_variants(self, text_only=False):
         if text_only:
@@ -84,7 +83,7 @@ class Question(models.Model):
         verbose_name='вопрос'
     )
     test = models.ForeignKey(
-        'Test',
+        'Result',
         on_delete=models.CASCADE,
         related_name='questions',
         verbose_name='тест'
@@ -173,6 +172,12 @@ class BlueprintTest(models.Model):
             )
         ]
 
+    def get_max_score(self):
+        score = self.questions.all()
+        return reduce(
+            lambda x, y: x + y, [q.get_max_score() for q in score]
+        )
+
     def get_guestions(self, text_only=False):
         if self.is_closed:
             return []
@@ -184,7 +189,7 @@ class BlueprintTest(models.Model):
         return f'Test {self.name[:20]}'
 
 
-class Test(models.Model):
+class Result(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

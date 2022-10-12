@@ -1,5 +1,6 @@
 console.log('script is starting now')
 
+const targettt = document.getElementById("timerDown");
 
 const url = window.location.href
 
@@ -23,6 +24,7 @@ $(document).ready(function() {
 
                 var content_for_adding = `<br>`
                 questions = response.questions
+
                 if (questions.length == 0) {
                     quizBox.innerHTML = `<br>
                     <div class="card shadow-sm col-4 bg-light top-50 start-50 translate-middle-x">
@@ -56,18 +58,18 @@ $(document).ready(function() {
                             `
                             variants.forEach(variant => {
                                 content_for_adding += `
-                                            <div class="mb-2">
-                                                <div class="form-check">
-                                                    <input 
-                                                        type="checkbox"
-                                                        class="form-check-input"
-                                                        id="${question}-${variant}"
-                                                        name="${question}"
-                                                        value="${variant}"
-                                                    >
-                                                    <label class="form-check-label" for="${question}">${variant}</label>
-                                                </div>
-                                            </div>
+                                    <div class="mb-2">
+                                        <div class="form-check">
+                                            <input 
+                                                type="checkbox"
+                                                class="form-check-input VARIANT"
+                                                id="${variant[0]}"
+                                                name="${question}"
+                                                value="${variant[1]}"
+                                            >
+                                            <label class="form-check-label" for="${variant[0]}">${variant[1]}</label>
+                                        </div>
+                                    </div>
                                 `
                             });
                             content_for_adding += `
@@ -88,7 +90,6 @@ $(document).ready(function() {
                             </div>
                         </div>
                     `
-                    const targettt = document.getElementById("timerDown");
 
 
                     setInterval(updateCount, 1000);
@@ -99,6 +100,7 @@ $(document).ready(function() {
                         seconds = seconds < 10 ? "0" + seconds : seconds;
                         text = `${minutes}:${seconds}`;
                         if ((minutes == 0) && (seconds == 0)) {
+                            sendData();
                             targettt.innerHTML = `Время вышло!`;
                             quizBox.innerHTML = `<br>
                                 <div class="text-center">
@@ -122,3 +124,54 @@ $(document).ready(function() {
         })
     })
 });
+
+const quizForm = document.getElementById("quiz-form")
+const csrf = document.getElementsByName("csrfmiddlewaretoken")
+
+function sendData() {
+
+    const elements = [...document.getElementsByClassName("form-check-input VARIANT")];
+    let data = {};
+    data['csrfmiddlewaretoken'] = csrf[0].value
+    let questions = [];
+    elements.forEach(el => {
+        if (el.checked) {
+            questions.push(el.id)
+        }
+    })
+
+    data.questions = questions
+    $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        url: `${url}send_answer`,
+        data: data,
+        success: function(response) {
+            console.log(response)
+            targettt.remove()
+            quizBox.innerHTML = `<br>
+                <div class="text-center">
+                    <div class="container col-4">
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-outline-dark rounded-pill">Посмотреть результат</button>
+                        </div>
+                    </div>
+                </div>
+            `
+        },
+        error: function(error) {
+            console.log(error)
+        }
+    })
+}
+quizForm.addEventListener("submit", e => {
+    e.preventDefault();
+
+    sendData();
+})
+
+// if (data[el.name]) {
+//    data[el.name].push(el.value)
+//} else {
+//    data[el.name] = [el.value]
+//}

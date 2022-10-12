@@ -1,4 +1,5 @@
 from random import shuffle
+import json
 
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -10,7 +11,7 @@ from .models import (
     BlueprintQuestion,
     Question,
     BlueprintTest,
-    Test,
+    Result,
 )
 from notifications.models import Notification
 
@@ -47,8 +48,8 @@ def get_data_for_quiz(request, slug):
     questions_list = list()
     for question in quiz.get_guestions():
         variants = []
-        for variant in question.get_variants(text_only=True):
-            variants.append(variant)
+        for variant in question.get_variants():
+            variants.append([variant.id, variant.text])
         shuffle(variants)
         questions_list.append({question.text: variants})
     shuffle(questions_list)
@@ -57,6 +58,50 @@ def get_data_for_quiz(request, slug):
         {
             'questions': questions_list,
             'timelimit': int(quiz.timelimit)
+        }
+    )
+
+# questions_list = list()
+#    for question in quiz.get_guestions():
+#        variants = []
+#        for variant in question.get_variants(text_only=True):
+#            variants.append(variant)
+#        shuffle(variants)
+#        questions_list.append({question.text: variants})
+#    shuffle(questions_list)
+
+
+def send_answer(request, slug):
+    """должен вернуть slug результата"""
+    if request.is_ajax():
+        test = get_object_or_404(BlueprintTest, slug=slug)
+        data = request.POST
+        data = dict(data.lists())
+        data.pop('csrfmiddlewaretoken')
+        max_score = test.get_max_score()
+        score = 0
+        data = set(
+            map(int, list(data.values())[0])
+        )
+        correct_variants = Variant.objects.filter(
+            question__test=test,
+            is_correct=True
+        ).values_list('pk')
+        correct_variants = set([var[0] for var in correct_variants])
+        
+        score += len(data & correct_variants)
+        score -= len(data ^ correct_variants)
+        score = 0 if score < 0 else score
+        result = Result.objects.create(
+            user=request.user,
+            test=test,
+            result=score,
+            max_result=max_score
+        )
+    return JsonResponse(
+        {
+            'status': 'success',
+            'slug': result.slug,
         }
     )
 
@@ -107,7 +152,7 @@ def edit_quiz(request):
 
 def quiz_result(request, slug):
     result = get_object_or_404(
-        Test,
+        Result,
         slug=slug
     )
     return render(

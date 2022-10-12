@@ -37,7 +37,7 @@
 }
 
 .cardss {
-    transition: all .8s;
+    transition: all 1s;
 }
 
 .cardss:hover {

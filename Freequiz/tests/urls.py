@@ -25,6 +25,11 @@ urlpatterns = [
         name='get_data_for_quiz'
     ),
     path(
+        'quiz/<slug:slug>/send_answer',
+        views.send_answer,
+        name='send_answer'
+    ),
+    path(
         'quiz/<slug:slug>/delete/',
         views.delete_quiz,
         name='delete_quiz'
