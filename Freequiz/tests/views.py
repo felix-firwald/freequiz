@@ -48,7 +48,7 @@ def get_data_for_quiz(request, slug):
     for question in quiz.get_guestions():
         variants = []
         for variant in question.get_variants():
-            variants.append([variant.id, variant.text])
+            variants.append([variant.id, variant.text, question.type])
         shuffle(variants)
         questions_list.append({question.text: variants})
     shuffle(questions_list)
@@ -60,20 +60,11 @@ def get_data_for_quiz(request, slug):
         }
     )
 
-# questions_list = list()
-#    for question in quiz.get_guestions():
-#        variants = []
-#        for variant in question.get_variants(text_only=True):
-#            variants.append(variant)
-#        shuffle(variants)
-#        questions_list.append({question.text: variants})
-#    shuffle(questions_list)
-
 
 def send_answer(request, slug):
     """должен вернуть slug результата"""
     if request.is_ajax():
-        test = get_object_or_404(BlueprintTest, slug=slug)
+        test = get_object_or_404(Test, slug=slug)
         data = request.POST
         data = dict(data.lists())
         data.pop('csrfmiddlewaretoken')
@@ -97,7 +88,7 @@ def send_answer(request, slug):
         correct_variants = set([var[0] for var in correct_variants])
         
         score += len(data & correct_variants)
-        score -= len(data ^ correct_variants)
+        score -= len(correct_variants - data)
         score = 0 if score < 0 else score
         result = Result.objects.create(
             user=request.user,
@@ -117,12 +108,28 @@ def send_answer(request, slug):
 @login_required
 def quiz(request, slug):
     quiz = get_object_or_404(
-        BlueprintTest,
+        Test,
         slug=slug
     )
+    times = quiz.attempts
+    if not times == 0:
+        if Result.objects.filter(
+            user=request.user,
+            test=quiz
+        ).count() >= times:
+            context = {
+                'is_passed': True,
+                'attempts': times
+            }
+            return render(
+                request,
+                'start_test.html',
+                context
+            )
     context = {
         'slug': quiz.slug,
         'is_closed': quiz.is_closed,
+        'is_passed': False,
         'name': quiz.name,
         'description': quiz.description,
         'timelimit': quiz.timelimit

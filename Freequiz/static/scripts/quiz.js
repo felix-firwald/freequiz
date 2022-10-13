@@ -61,8 +61,8 @@ $(document).ready(function() {
                                     <div class="mb-2">
                                         <div class="form-check">
                                             <input 
-                                                type="checkbox"
-                                                class="form-check-input VARIANT"
+                                                type="${variant[2]}"
+                                                class="${(variant[2] == 'text') ? 'form-control TEXT_INPUT': 'form-check-input VARIANT'}"
                                                 id="${variant[0]}"
                                                 name="${question}"
                                                 value="${variant[1]}"

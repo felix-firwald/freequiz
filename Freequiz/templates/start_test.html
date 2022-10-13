@@ -14,12 +14,16 @@
     <div id="lable-of-test" class="position-relative top-50 col-12 bg-light start-0">
         <div class="not_allocated">
             <br>
+            {% if is_passed %}
+                {% include 'includes/test_is_passed_already.html' %}
+            {% else %}
                 {% include 'includes/test_lable.html' %}
                 <form id="quiz-form" class="form-group">
                     {% csrf_token %}
                     <div id="quiz-box"></div>
                     </div>
                 </form>
+            {% endif %}
                 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
         </div>
     </div>

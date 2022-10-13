@@ -1,0 +1,23 @@
+{% load static %}
+<div class="card shadow-sm col-4 border-0 top-50 start-50 translate-middle-x">
+    <div class="blocks">
+        <br>
+        <div class="container">
+            <div class="row">
+                <svg 
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="90"
+                    height="90"
+                    fill="#6c757d"
+                    class="bi bi-x-circle-fill"
+                    viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+                </svg>
+            </div>
+        </div>
+        <div class="card-body">
+            <h4 class="text-center text-secondary">Вы исчерпали допустимое количество попыток</h4>
+            <p class="text-center font-weight-light text-secondary">Количество попыток для этого теста составляло: {{ attempts }}</p>
+        </div>
+    </div>
+</div>
