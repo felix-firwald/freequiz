@@ -34,9 +34,16 @@ TYPES_OF_COUNTING = [
 #        verbose_name='Вопрос'
 #    )
 
+
 class Variant(models.Model):
     text = models.CharField(max_length=120, verbose_name='Текст')
     is_correct = models.BooleanField(default=False)
+    question = models.ForeignKey(
+        'Question',
+        on_delete=models.CASCADE,
+        related_name='variants',
+        verbose_name='Вопрос'
+    )
 
     class Meta:
         verbose_name = 'Вариант'

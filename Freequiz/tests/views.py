@@ -14,6 +14,8 @@ from .models import (
 )
 from notifications.models import Notification
 
+DOMAIN = Site.objects.get_current().domain
+
 
 def main_page(request):
     alert = Notification.objects.last()
@@ -41,18 +43,18 @@ def create_quiz(request):
 @login_required
 def get_data_for_quiz(request, slug):
     quiz = get_object_or_404(Test, slug=slug)
-    questions_list = list()
-    for question in quiz.get_questions():
-        variants = []
-        for variant in question.get_variants():
-            variants.append([variant.id, variant.text, question.type])
-        shuffle(variants)
-        questions_list.append({question.text: variants})
-    shuffle(questions_list)
+    data = Question.objects.filter(test=quiz).values('text', 'type', 'variants__id', 'variants__text')
+    questions_dict = dict()
+    for question in data:
+        questions_dict.setdefault(
+            question['text'], []
+        ).append(
+            [question['variants__id'], question['variants__text'], question['type']]
+        )
 
     return JsonResponse(
         {
-            'questions': questions_list,
+            'questions': questions_dict,
             'timelimit': int(quiz.timelimit)
         }
     )
@@ -65,8 +67,6 @@ def send_answer(request, slug):
         data = request.POST
         data = dict(data.lists())
         data.pop('csrfmiddlewaretoken')
-        max_score = test.get_max_score()
-        score = 0
         try:
             data = set(
                 map(int, list(data.values())[0])
@@ -82,10 +82,12 @@ def send_answer(request, slug):
             question__test=test,
             is_correct=True
         ).values_list('pk')
+        max_score = len(correct_variants)
         correct_variants = set([var[0] for var in correct_variants])
-        
+        score = 0
         score += len(data & correct_variants)
-        score -= len(correct_variants - data)
+        if test.subtract_incorrect:
+            score -= len(correct_variants - data)
         score = 0 if score < 0 else score
         result = Result.objects.create(
             user=request.user,
@@ -97,7 +99,7 @@ def send_answer(request, slug):
         {
             'status': True,
             'slug': result.get_absolute_url(),
-            'domain': Site.objects.get_current().domain
+            'domain': DOMAIN
         }
     )
 
