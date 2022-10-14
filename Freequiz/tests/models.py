@@ -27,15 +27,15 @@ TYPES_OF_COUNTING = [
     (3, 'Три попытки')
 ]
 
+#    question = models.ForeignKey(
+#        'Question',
+#        on_delete=models.CASCADE,
+#        related_name='variants',
+#        verbose_name='Вопрос'
+#    )
 
 class Variant(models.Model):
     text = models.CharField(max_length=120, verbose_name='Текст')
-    question = models.ForeignKey(
-        'Question',
-        on_delete=models.CASCADE,
-        related_name='variants',
-        verbose_name='Вопрос'
-    )
     is_correct = models.BooleanField(default=False)
 
     class Meta:
@@ -151,7 +151,7 @@ class Test(models.Model):
             lambda x, y: x + y, [q.get_max_score() for q in questions]
         )
 
-    def get_guestions(self, text_only=False):
+    def get_questions(self, text_only=False):
         if self.is_closed:
             return []
         if text_only:

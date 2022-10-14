@@ -40,12 +40,9 @@ def create_quiz(request):
 
 @login_required
 def get_data_for_quiz(request, slug):
-    quiz = get_object_or_404(
-        Test,
-        slug=slug
-    )
+    quiz = get_object_or_404(Test, slug=slug)
     questions_list = list()
-    for question in quiz.get_guestions():
+    for question in quiz.get_questions():
         variants = []
         for variant in question.get_variants():
             variants.append([variant.id, variant.text, question.type])

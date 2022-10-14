@@ -43,8 +43,8 @@ class VariantInline(admin.StackedInline):
 
 class QuestionAdmin(admin.ModelAdmin):
 
-    inlines = [VariantInline]
-    fields = ('text', 'test', 'type', 'description')
+    inlines = []
+    fields = ('text', 'test', 'type', 'variants')
     list_display = ('text', 'test', 'type', 'get_max_score')
     search_fields = ('text', 'test', 'type')
     list_filter = ('test', 'type')
