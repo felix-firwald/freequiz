@@ -7,26 +7,26 @@ const url = window.location.href
 const quizBox = document.getElementById("quiz-box")
 
 $(document).ready(function() {
-    $('#startTest').click(function(e) {
-        var button = $(this);
-        button.disabled = true;
-        setTimeout(
-            button.slideUp(200),
-            1000
-        )
-        document.getElementById("tabulation").remove();
-        $.ajax({
-            type: 'GET',
-            url: `${url}data`,
-            success: function(response) {
-                console.log(response);
-                let timer = response.timelimit
+            $('#startTest').click(function(e) {
+                        var button = $(this);
+                        button.disabled = true;
+                        setTimeout(
+                            button.slideUp(200),
+                            1000
+                        )
+                        document.getElementById("tabulation").remove();
+                        $.ajax({
+                                    type: 'GET',
+                                    url: `${url}data`,
+                                    success: function(response) {
+                                            console.log(response);
+                                            let timer = response.timelimit
 
-                var content_for_adding = `<br>`
-                questions = response.questions
+                                            var content_for_adding = `<br>`
+                                            questions = response.questions
 
-                if (questions.length == 0) {
-                    quizBox.innerHTML = `<br>
+                                            if (questions.length == 0) {
+                                                quizBox.innerHTML = `<br>
                     <div class="card shadow-sm col-4 bg-light top-50 start-50 translate-middle-x">
                         <div class="card-body">
                             <div class="mb-2">
@@ -45,41 +45,43 @@ $(document).ready(function() {
                                         </svg>
                                     </div>
                                 </div><br>
-                                <p class="text-center font-weight-light text-secondary">К сожалению, вопросов в тесте нет.<br>Обратитесь с этой проблемой к автору.</p>
+                                <p class="text-center font-weight-light text-secondary">К сожалению, вопросов в тесте нет<br>Обратитесь с этой проблемой к автору</p>
                     `
-                } else {
-                    questions.forEach(el => {
-                        for (const [question, variants] of Object.entries(el)) {
-                            content_for_adding += `
+                                            } else {
+                                                qs = Object.entries(questions)
+                                                for (var question of qs) {
+                                                    content_for_adding += `
                                 <div class="notification card shadow-sm col-4 border-0 top-50 start-50 translate-middle-x">
                                     <div class="card-body">
                                         <div class="mb-2">
-                                            <h4 class="card-title">${question}</h4><hr>
+                                            <h4 class="card-title">${question[0]}</h4><hr>
                             `
-                            variants.forEach(variant => {
-                                content_for_adding += `
-                                    <div class="mb-2">
-                                        <div class="form-check">
-                                            <input 
-                                                type="${variant[2]}"
-                                                class="${(variant[2] == 'text') ? 'form-control TEXT_INPUT': 'form-check-input VARIANT'}"
-                                                id="${variant[0]}"
-                                                name="${question}"
-                                                value="${variant[1]}"
-                                            >
-                                            <label class="form-check-label" for="${variant[0]}">${variant[1]}</label>
-                                        </div>
-                                    </div>
-                                `
-                            });
-                            content_for_adding += `
+                                                    question[1].forEach(([id, text, type]) => {
+                                                                if (text != null) {
+                                                                    content_for_adding += `
+                                            <div class="mb-2">
+                                                <div class="form-check">
+                                                    <input 
+                                                        type="${type}"
+                                                        class="${(type == 'text') ? 'form-control TEXT_INPUT': 'form-check-input VARIANT'}"
+                                                        id="${id}"
+                                                        name="${question}"
+                                                        value="${(type == 'text') ? '' : text}"
+                                                    >
+                                                    ${(type == 'text') ? '': `<label class="form-check-label" for="${id}">${text}</label>`}
+                                                </div>
+                                            </div>
+                                        `
+                            }
+                        });
+                        content_for_adding += `
                                         </div>
                                     </div>    
                                 </div>
                                 <br>
                             `
-                        }
-                    });
+                    }
+
                     quizBox.innerHTML += content_for_adding
                     quizBox.innerHTML += `
                         <div class="text-center">

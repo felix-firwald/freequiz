@@ -13,6 +13,7 @@ User = get_user_model()
 TYPES_OF_QUESTION = [
     ('radio', 'Один правильный ответ'),
     ('checkbox', 'Несколько правильных ответов'),
+    ('text', 'Текстовый ответ')
 ]
 
 TYPES_OF_ACCESS = [

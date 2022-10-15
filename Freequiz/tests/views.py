@@ -43,7 +43,8 @@ def create_quiz(request):
 @login_required
 def get_data_for_quiz(request, slug):
     quiz = get_object_or_404(Test, slug=slug)
-    data = Question.objects.filter(test=quiz).values('text', 'type', 'variants__id', 'variants__text')
+    data = Question.objects.filter(test=quiz).values(
+        'text', 'type', 'variants__id', 'variants__text')
     questions_dict = dict()
     for question in data:
         questions_dict.setdefault(
