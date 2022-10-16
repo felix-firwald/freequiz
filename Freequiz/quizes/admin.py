@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import (
     Variant,
     Question,
-    Test,
+    Quiz,
     Result,
 )
 
@@ -44,17 +44,17 @@ class VariantInline(admin.StackedInline):
 class QuestionAdmin(admin.ModelAdmin):
 
     inlines = [VariantInline]
-    fields = ('text', 'test', 'type')
-    list_display = ('text', 'test', 'type', 'get_max_score')
-    search_fields = ('text', 'test', 'type')
-    list_filter = ('test', 'type')
+    fields = ('text', 'quiz', 'type')
+    list_display = ('text', 'quiz', 'type', 'get_max_score')
+    search_fields = ('text', 'quiz', 'type')
+    list_filter = ('quiz', 'type')
 
 
 class QuesInline(admin.StackedInline):
     model = Question
 
 
-class TestAdmin(admin.ModelAdmin):
+class QuizAdmin(admin.ModelAdmin):
     list_display = (
         'name', 'author', 'is_closed',
         'subtract_incorrect', 'access', 'timelimit', 'attempts'
@@ -73,13 +73,13 @@ class TestAdmin(admin.ModelAdmin):
 
 
 class ResultAdmin(admin.ModelAdmin):
-    list_display = ('test', 'user', 'passed', 'result', 'max_result', 'slug')
-    search_fields = ('test', 'user', 'passed', 'result')
-    list_filter = ('test', 'test__author', 'user', 'passed', 'result')
+    list_display = ('quiz', 'user', 'passed', 'result', 'max_result', 'slug')
+    search_fields = ('quiz', 'user', 'passed', 'result')
+    list_filter = ('quiz', 'quiz__author', 'user', 'passed', 'result')
     empty_value_display = 'нельзя редактировать'
-    readonly_fields = ('result', 'max_result', 'user', 'test')
+    readonly_fields = ('result', 'max_result', 'user', 'quiz')
 
 
 admin.site.register(Question, QuestionAdmin)
-admin.site.register(Test, TestAdmin)
+admin.site.register(Quiz, QuizAdmin)
 admin.site.register(Result, ResultAdmin)

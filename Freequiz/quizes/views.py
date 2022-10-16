@@ -1,6 +1,6 @@
 from random import shuffle
 
-from django.contrib.sites.models import Site
+# from django.contrib.sites.models import Site
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -9,17 +9,17 @@ from .models import (
     User,
     Variant,
     Question,
-    Test,
+    Quiz,
     Result,
 )
 from notifications.models import Notification
 
-DOMAIN = Site.objects.get_current().domain
+# DOMAIN = Site.objects.get_current().domain
 
 
 def main_page(request):
     alert = Notification.objects.last()
-    tests = Test.objects.filter(
+    tests = Quiz.objects.filter(
         is_closed=False,
         access='all'
     )
@@ -27,7 +27,7 @@ def main_page(request):
         request,
         'index.html',
         {
-            'tests': tests,
+            'quizes': tests,
             'notification': alert
         }
     )
@@ -36,14 +36,14 @@ def main_page(request):
 @login_required
 def create_quiz(request):
     return redirect(
-        'tests:main'
+        'quizes:main'
     )
 
 
 @login_required
 def get_data_for_quiz(request, slug):
-    quiz = get_object_or_404(Test, slug=slug)
-    data = Question.objects.filter(test=quiz).values(
+    quiz = get_object_or_404(Quiz, slug=slug)
+    data = Question.objects.filter(quiz=quiz).values(
         'text', 'type', 'variants__id', 'variants__text')
     questions_dict = dict()
     for question in data:
@@ -64,7 +64,7 @@ def get_data_for_quiz(request, slug):
 def send_answer(request, slug):
     """должен вернуть slug результата"""
     if request.is_ajax():
-        test = get_object_or_404(Test, slug=slug)
+        quiz = get_object_or_404(Quiz, slug=slug)
         data = request.POST
         data = dict(data.lists())
         data.pop('csrfmiddlewaretoken')
@@ -80,19 +80,19 @@ def send_answer(request, slug):
                 }
             )
         correct_variants = Variant.objects.filter(
-            question__test=test,
+            question__quiz=quiz,
             is_correct=True
         ).values_list('pk')
         max_score = len(correct_variants)
         correct_variants = set([var[0] for var in correct_variants])
         score = 0
         score += len(data & correct_variants)
-        if test.subtract_incorrect:
+        if quiz.subtract_incorrect:
             score -= len(correct_variants - data)
         score = 0 if score < 0 else score
         result = Result.objects.create(
             user=request.user,
-            test=test,
+            quiz=quiz,
             result=score,
             max_result=max_score
         )
@@ -102,7 +102,6 @@ def send_answer(request, slug):
             'score': score,
             'max_score': max_score,
             'slug': result.get_absolute_url(),
-            'domain': DOMAIN
         }
     )
 
@@ -110,14 +109,14 @@ def send_answer(request, slug):
 @login_required
 def quiz(request, slug):
     quiz = get_object_or_404(
-        Test,
+        Quiz,
         slug=slug
     )
     times = quiz.attempts
     if not times == 0:
         if Result.objects.filter(
             user=request.user,
-            test=quiz
+            quiz=quiz
         ).count() >= times:
             context = {
                 'is_passed': True,
@@ -145,17 +144,17 @@ def quiz(request, slug):
 
 @login_required
 def delete_quiz(request, slug):
-    test = get_object_or_404(
-        BlueprintTest,
+    quiz = get_object_or_404(
+        Quiz,
         slug=slug
     )
-    if test.author == request.user:
-        test.delete()
+    if quiz.author == request.user:
+        quiz.delete()
         return redirect(
-            'tests:main'
+            'quizes:main'
         )
     return redirect(
-        'tests:quiz',
+        'quizes:quiz',
         slug
     )
 
@@ -163,7 +162,7 @@ def delete_quiz(request, slug):
 @login_required
 def edit_quiz(request):
     return redirect(
-        'tests:main'
+        'quizes:main'
     )
 
 
@@ -181,7 +180,7 @@ def quiz_result(request, result):
 
 @login_required
 def my_results(request):
-    results = request.user.tests_results.all()
+    results = request.user.quizes_results.all()
     return render(
         request,
         'my_results',

@@ -28,13 +28,6 @@ TYPES_OF_COUNTING = [
     (3, 'Три попытки')
 ]
 
-#    question = models.ForeignKey(
-#        'Question',
-#        on_delete=models.CASCADE,
-#        related_name='variants',
-#        verbose_name='Вопрос'
-#    )
-
 
 class Variant(models.Model):
     text = models.CharField(max_length=120, verbose_name='Текст')
@@ -56,8 +49,8 @@ class Variant(models.Model):
 
 class Question(models.Model):
     text = models.CharField(max_length=160, verbose_name='Текст')
-    test = models.ForeignKey(
-        'Test',
+    quiz = models.ForeignKey(
+        'Quiz',
         on_delete=models.CASCADE,
         related_name='questions',
         verbose_name='Тест'
@@ -91,7 +84,7 @@ class Question(models.Model):
         return f'{self.text[:250]}'
 
 
-class Test(models.Model):
+class Quiz(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -177,8 +170,8 @@ class Result(models.Model):
         related_name='tests_results',
         verbose_name='пользователь'
     )
-    test = models.ForeignKey(
-        Test,
+    quiz = models.ForeignKey(
+        Quiz,
         on_delete=models.DO_NOTHING,
         related_name='results',
         verbose_name='тест'
@@ -197,7 +190,7 @@ class Result(models.Model):
 
     def get_absolute_url(self):
         from django.urls import reverse
-        return reverse('tests:result', kwargs={'slug': self.slug})
+        return reverse('quizes:result', kwargs={'slug': self.slug})
 
     class Meta:
         verbose_name = 'результат'

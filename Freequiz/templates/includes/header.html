@@ -2,7 +2,7 @@
 
 <div class="navbar navbar-dark" style="background-color: dark">
     <div class="container">
-        <a class="navbar-brand" href="{% url 'tests:main' %}">
+        <a class="navbar-brand" href="{% url 'quizes:main' %}">
             <img src="{% static 'favicon.svg' %}" width="80" height="80" class="d-inline-block align-top" alt="">
         </a>
         <ul class="nav justify-content-center">
@@ -10,7 +10,7 @@
                 <li class="nav-item"> 
                     <a 
                     class="nav-link {% if view_name  == 'my_results' %}active{% endif %}" 
-                    href="{% url 'tests:my_results' %}">Пройденные тесты</a>
+                    href="{% url 'quizes:my_results' %}">Пройденные тесты</a>
                 </li>
                 <li class="nav-item"> 
                     <a 

@@ -25,7 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include('users.urls')),
     path('watch/', include('notifications.urls')),
-    path('', include('tests.urls')),
+    path('', include('quizes.urls')),
     path('__debug__/', include('debug_toolbar.urls'))
 ]
 
