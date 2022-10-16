@@ -94,7 +94,7 @@ $(document).ready(function() {
                     `
 
 
-                    setInterval(updateCount, 1000);
+                    timerr = setInterval(updateCount, 1000);
 
                     function updateCount() {
                         const minutes = Math.floor(timer / 60);
@@ -131,8 +131,9 @@ const quizForm = document.getElementById("quiz-form")
 const csrf = document.getElementsByName("csrfmiddlewaretoken")
 
 function sendData() {
-
+    clearInterval(timerr);
     const elements = [...document.getElementsByClassName("form-check-input VARIANT")];
+    // const text_areas = [...document.getElementsByClassName("form-control TEXT_INPUT")];
     let data = {};
     data['csrfmiddlewaretoken'] = csrf[0].value
     let questions = [];
@@ -152,13 +153,16 @@ function sendData() {
             console.log(response)
             targettt.remove()
             quizBox.innerHTML = `<br>
-                <div class="text-center">
-                    <div class="container col-4">
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-outline-dark rounded-pill">Посмотреть результат</button>
+                    <div class="card shadow-sm col-4 bg-light top-50 start-50 translate-middle-x">
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <div class="container">
+                                    <h4>Ваш результат:</h4>
+                                    <h1>${response.score}/${response.max_score}</h1>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
             `
         },
         error: function(error) {

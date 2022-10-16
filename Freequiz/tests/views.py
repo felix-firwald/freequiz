@@ -99,6 +99,8 @@ def send_answer(request, slug):
     return JsonResponse(
         {
             'status': True,
+            'score': score,
+            'max_score': max_score,
             'slug': result.get_absolute_url(),
             'domain': DOMAIN
         }

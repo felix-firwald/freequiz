@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
     Главная
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'scripts/main.js' %}" defer></script>
 {% endblock %}
 
 {% block content %}
