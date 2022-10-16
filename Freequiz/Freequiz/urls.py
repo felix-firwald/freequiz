@@ -23,6 +23,7 @@ handler500 = 'core.views.internal_server_error'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', include('api.urls')),
     path('user/', include('users.urls')),
     path('watch/', include('notifications.urls')),
     path('', include('quizes.urls')),

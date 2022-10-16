@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'notifications.apps.NotificationsConfig',
     'core.apps.CoreConfig',
     'quizes.apps.QuizesConfig',
+    'api.apps.ApiConfig',
     # 'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
