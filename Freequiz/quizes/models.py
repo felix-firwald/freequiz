@@ -63,7 +63,8 @@ class Question(models.Model):
     type = models.CharField(
         max_length=50,
         choices=TYPES_OF_QUESTION,
-        verbose_name='Тип вопроса'
+        verbose_name='Тип вопроса',
+        default='radio'
     )
 
     class Meta:
