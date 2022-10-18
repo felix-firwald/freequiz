@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from .views import QuizList, QuizDetail, QuestionsViewSet
+from .views import QuizList, QuizDetail, QuestionsViewSet, ResultsViewSet
 
 app_name = 'api'
 
@@ -16,7 +16,11 @@ urlpatterns = [
         'quiz/<slug:slug>/', QuizDetail.as_view()
     ),
     path(
-        'questions/<int:pk>/', QuestionsViewSet.as_view({'delete': 'perform_destroy'})
+        'questions/<int:pk>/', QuestionsViewSet.as_view({
+            'put': 'update',
+            'patch': 'partial_update',
+            'delete': 'perform_destroy'
+        })
     ),
     path(
         'quiz/<slug:slug>/questions/', QuestionsViewSet.as_view({
@@ -24,4 +28,9 @@ urlpatterns = [
             'post': 'create',
         })
     ),
+    path('quiz/<slug:slug>/results/', ResultsViewSet.as_view({
+        'get': 'list',
+        'post': 'create'
+        })
+    )
 ]

@@ -36,5 +36,5 @@ class QuizSerializer(serializers.ModelSerializer):
 
 class ResultSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Question
-        fields = ('slug', 'result', 'max_result', 'user', 'quiz')
+        model = models.Result
+        fields = ('slug', 'result', 'max_result', 'user', 'passed')

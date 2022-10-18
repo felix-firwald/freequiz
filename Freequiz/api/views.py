@@ -49,3 +49,19 @@ class QuizDetail(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'slug'
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
+
+
+class ResultsViewSet(viewsets.ViewSet):
+    def list(self, request, slug=None):
+        queryset = Result.objects.filter(quiz__slug=slug)
+        serializer = ResultSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request, slug=None):
+        result = Result.objects.create(
+            result=request.data['result'],
+            max_result=request.data['max_result'],
+            user=request.user,
+            quiz=get_object_or_404(Quiz, slug=slug)
+        )
+        return Response({'result': model_to_dict(result)})
