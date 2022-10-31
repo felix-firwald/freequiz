@@ -1,25 +1,45 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
+from rest_framework.response import Response
 
-from quizes import models
+from quizes.models import (
+    Variant,
+    Question,
+    Quiz,
+    Result
+)
 
 
 class VariantSerializer(serializers.ModelSerializer):
+    question = serializers.SlugRelatedField(
+        slug_field='pk',
+        queryset=Question.objects.all(),
+        write_only=True
+    )
+    pk = serializers.IntegerField(read_only=True)
+
     class Meta:
-        model = models.Variant
-        fields = ('id', 'text', 'is_correct')
+        model = Variant
+        fields = ('pk', 'text', 'is_correct', 'question')
 
 
 class QuestionSerializer(serializers.ModelSerializer):
-    variants = VariantSerializer(many=True)
+    variants = VariantSerializer(many=True, read_only=True)
+    pk = serializers.IntegerField(read_only=True)
+    quiz = serializers.SlugRelatedField(
+        slug_field='slug',
+        queryset=Quiz.objects.all(),
+        write_only=True
+    )
 
     class Meta:
-        model = models.Question
-        fields = ('text', 'additional', 'type', 'variants')
+        model = Question
+        fields = ('pk', 'text', 'additional', 'type', 'variants', 'quiz')
 
 
 class QuizSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Quiz
+        model = Quiz
         lookup_field = 'slug'
         fields = (
             'name',
@@ -36,5 +56,5 @@ class QuizSerializer(serializers.ModelSerializer):
 
 class ResultSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Result
+        model = Result
         fields = ('slug', 'result', 'max_result', 'user', 'passed')
